@@ -5,19 +5,25 @@ public class RouteParser {
     private let matchers: [RouteMatcher]
     
     public init() {
-        // Define route patterns
-        // These patterns will be compiled on EVERY parse call (performance issue)
-        self.matchers = [
-            RouteMatcher(pattern: "^/home$", template: "/home"),
-            RouteMatcher(pattern: "^/profile$", template: "/profile"),
-            RouteMatcher(pattern: "^/settings$", template: "/settings"),
-            RouteMatcher(pattern: "^/feature/([^/]+)$", template: "/feature/:id"),
-            RouteMatcher(pattern: "^/help$", template: "/help"),
+        // OPTIMIZED: Pre-compile regex patterns once at initialization
+        let patterns: [(String, String)] = [
+            ("^/home$", "/home"),
+            ("^/profile$", "/profile"),
+            ("^/settings$", "/settings"),
+            ("^/feature/([^/]+)$", "/feature/:id"),
+            ("^/help$", "/help"),
         ]
+        
+        self.matchers = patterns.compactMap { pattern, template in
+            guard let regex = try? NSRegularExpression(pattern: pattern, options: []) else {
+                return nil
+            }
+            return RouteMatcher(regex: regex, template: template)
+        }
     }
     
     /// Parse a URL string into a Route
-    /// This will compile 5+ regex patterns on EVERY call!
+    /// OPTIMIZED: Uses pre-compiled regex patterns
     public func parse(_ urlString: String) -> Route? {
         for matcher in matchers {
             if matcher.matches(urlString) {
