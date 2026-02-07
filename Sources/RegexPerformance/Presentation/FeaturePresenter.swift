@@ -3,13 +3,10 @@ import Combine
 
 /// Presents feature information to the UI
 ///
-/// PERFORMANCE ISSUE: This parses the same route multiple times!
-/// - Once in update()
-/// - Again in logTap()
-/// - Again in checkPermissions()
+/// OPTIMIZED: Parse route once and reuse it!
 public class FeaturePresenter: ObservableObject {
     private let parser: RouteParser
-    private var currentFeature: Feature?
+    private var currentAction: Action?
     
     public struct Feature {
         public let id: String
@@ -23,17 +20,30 @@ public class FeaturePresenter: ObservableObject {
         }
     }
     
+    /// Action bundles the feature with its parsed route
+    /// OPTIMIZED: Parse once, reuse many times
+    public struct Action {
+        public let feature: Feature
+        public let route: Route?
+        
+        public init(feature: Feature, route: Route?) {
+            self.feature = feature
+            self.route = route
+        }
+    }
+    
     public init(parser: RouteParser) {
         self.parser = parser
     }
     
     /// Update with a new feature
-    /// PERFORMANCE ISSUE: Parses the route here
+    /// OPTIMIZED: Parse once and store in Action
     public func update(feature: Feature) {
-        self.currentFeature = feature
-        
-        // Parse the route to get route information
+        // Parse the route once
         let route = parser.parse(feature.url)
+        
+        // Store both feature and route together
+        self.currentAction = Action(feature: feature, route: route)
         
         // Use the route for something...
         if let route = route {
@@ -42,27 +52,23 @@ public class FeaturePresenter: ObservableObject {
     }
     
     /// Log a tap event
-    /// PERFORMANCE ISSUE: Parses the SAME route again!
+    /// OPTIMIZED: Reuse the parsed route from currentAction
     public func logTap() {
-        guard let feature = currentFeature else { return }
+        guard let action = currentAction else { return }
         
-        // Parse the route again to log it
-        let route = parser.parse(feature.url)
-        
-        if let route = route {
+        // Reuse the already-parsed route
+        if let route = action.route {
             print("Logged tap on: \(route.path)")
         }
     }
     
     /// Check permissions for the current feature
-    /// PERFORMANCE ISSUE: Parses the SAME route yet again!
+    /// OPTIMIZED: Reuse the parsed route from currentAction
     public func checkPermissions() {
-        guard let feature = currentFeature else { return }
+        guard let action = currentAction else { return }
         
-        // Parse the route again to check permissions
-        let route = parser.parse(feature.url)
-        
-        if let route = route {
+        // Reuse the already-parsed route
+        if let route = action.route {
             print("Checked permissions for: \(route.path)")
         }
     }
