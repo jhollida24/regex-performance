@@ -2,6 +2,7 @@ import Foundation
 
 /// Aggregates multiple URL redactors
 /// Tries each redactor until one can handle the URL
+/// OPTIMIZED: Single pass through redactors
 public class AggregateRedactor: URLRedactor {
     private let redactors: [URLRedactor]
     
@@ -9,25 +10,14 @@ public class AggregateRedactor: URLRedactor {
         self.redactors = redactors
     }
     
-    /// Check if any redactor can handle this URL
-    /// PERFORMANCE ISSUE: This will cause each redactor to parse the URL
-    public func isCapableOfRedacting(urlString: String) -> Bool {
+    /// OPTIMIZED: Try each redactor once, return first successful result
+    public func redact(urlString: String) -> RedactionResult {
         for redactor in redactors {
-            if redactor.isCapableOfRedacting(urlString: urlString) {
-                return true
+            let result = redactor.redact(urlString: urlString)
+            if case .redacted = result {
+                return result
             }
         }
-        return false
-    }
-    
-    /// Redact using the first capable redactor
-    /// PERFORMANCE ISSUE: The URL was already parsed in isCapableOfRedacting!
-    public func redact(urlString: String) -> String {
-        for redactor in redactors {
-            if redactor.isCapableOfRedacting(urlString: urlString) {
-                return redactor.redact(urlString: urlString)
-            }
-        }
-        return urlString
+        return .notApplicable
     }
 }

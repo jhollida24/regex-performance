@@ -8,12 +8,20 @@ final class URLRedactorTests: XCTestCase {
         let redactor = ClientRouteURLRedactor(parser: parser)
         
         // Test that it can redact feature URLs
-        XCTAssertTrue(redactor.isCapableOfRedacting(urlString: "/feature/123"))
-        XCTAssertEqual(redactor.redact(urlString: "/feature/123"), "/feature/:id")
+        let result1 = redactor.redact(urlString: "/feature/123")
+        if case .redacted(let redacted) = result1 {
+            XCTAssertEqual(redacted, "/feature/:id")
+        } else {
+            XCTFail("Expected redacted result")
+        }
         
         // Test that it handles unknown URLs
-        XCTAssertFalse(redactor.isCapableOfRedacting(urlString: "/unknown/path"))
-        XCTAssertEqual(redactor.redact(urlString: "/unknown/path"), "/unknown/path")
+        let result2 = redactor.redact(urlString: "/unknown/path")
+        if case .notApplicable = result2 {
+            // Success
+        } else {
+            XCTFail("Expected notApplicable result")
+        }
     }
     
     func testAggregateRedactor() {
@@ -22,11 +30,19 @@ final class URLRedactorTests: XCTestCase {
         let aggregate = AggregateRedactor(redactors: [clientRouteRedactor])
         
         // Test that aggregate works
-        XCTAssertTrue(aggregate.isCapableOfRedacting(urlString: "/feature/456"))
-        XCTAssertEqual(aggregate.redact(urlString: "/feature/456"), "/feature/:id")
+        let result1 = aggregate.redact(urlString: "/feature/456")
+        if case .redacted(let redacted) = result1 {
+            XCTAssertEqual(redacted, "/feature/:id")
+        } else {
+            XCTFail("Expected redacted result")
+        }
         
         // Test that it handles unknown URLs
-        XCTAssertFalse(aggregate.isCapableOfRedacting(urlString: "/unknown"))
-        XCTAssertEqual(aggregate.redact(urlString: "/unknown"), "/unknown")
+        let result2 = aggregate.redact(urlString: "/unknown")
+        if case .notApplicable = result2 {
+            // Success
+        } else {
+            XCTFail("Expected notApplicable result")
+        }
     }
 }

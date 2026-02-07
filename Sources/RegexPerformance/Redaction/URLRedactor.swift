@@ -1,19 +1,22 @@
 import Foundation
 
+/// Result of attempting to redact a URL
+public enum RedactionResult {
+    case redacted(String)
+    case notApplicable
+}
+
 /// Protocol for redacting sensitive information from URLs
+/// OPTIMIZED: Single method that returns a result enum
 public protocol URLRedactor {
-    /// Check if this redactor can handle the given URL
-    func isCapableOfRedacting(urlString: String) -> Bool
-    
-    /// Redact the URL (replace sensitive parts with placeholders)
-    func redact(urlString: String) -> String
+    /// Redact the URL if applicable
+    /// Returns .redacted(String) if redaction was performed
+    /// Returns .notApplicable if this redactor doesn't handle this URL
+    func redact(urlString: String) -> RedactionResult
 }
 
 /// Redacts client route URLs by replacing IDs with placeholders
-///
-/// PERFORMANCE ISSUE: This parses URLs twice!
-/// - Once in isCapableOfRedacting()
-/// - Again in redact()
+/// OPTIMIZED: Parse once and return result
 public class ClientRouteURLRedactor: URLRedactor {
     private let parser: RouteParser
     
@@ -21,24 +24,19 @@ public class ClientRouteURLRedactor: URLRedactor {
         self.parser = parser
     }
     
-    /// PERFORMANCE ISSUE: Parses the URL to check if we can handle it
-    public func isCapableOfRedacting(urlString: String) -> Bool {
-        // Parse to see if this is a route we recognize
-        return parser.parse(urlString) != nil
-    }
-    
-    /// PERFORMANCE ISSUE: Parses the URL AGAIN to redact it
-    public func redact(urlString: String) -> String {
-        guard let route = parser.parse(urlString) else {
-            return urlString
+    /// OPTIMIZED: Parse once and return result
+    public func redact(urlString: String) -> RedactionResult {
+        // Parse once to check and redact
+        guard let _ = parser.parse(urlString) else {
+            return .notApplicable
         }
         
         // Replace IDs with placeholders
         // e.g., /feature/123 -> /feature/:id
         if urlString.hasPrefix("/feature/") {
-            return "/feature/:id"
+            return .redacted("/feature/:id")
         }
         
-        return urlString
+        return .redacted(urlString)
     }
 }
