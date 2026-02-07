@@ -1,4 +1,5 @@
 import SwiftUI
+import RegexPerformance
 
 struct FeatureDetailView: View {
     @StateObject private var presenter = FeaturePresenter()

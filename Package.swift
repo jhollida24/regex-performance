@@ -15,7 +15,8 @@ let package = Package(
     targets: [
         .target(
             name: "RegexPerformance",
-            path: "RegexPerformance"),
+            path: "RegexPerformance",
+            exclude: ["RegexPerformanceApp.swift", "ContentView.swift", "FeatureDetailView.swift"]),
         .testTarget(
             name: "RegexPerformanceTests",
             dependencies: ["RegexPerformance"],

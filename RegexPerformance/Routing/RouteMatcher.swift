@@ -18,11 +18,11 @@ struct RouteMatcher {
     func extract(from input: String) -> [String: String]? {
         // Optimization: reuse pre-compiled regex
         let range = NSRange(input.startIndex..., in: input)
-        guard let match = regex.firstMatch(in: input, range: range) else {
+        guard regex.firstMatch(in: input, range: range) != nil else {
             return nil
         }
         
-        var parameters: [String: String] = [:]
+        let parameters: [String: String] = [:]
         // Extract named groups if any
         return parameters
     }
