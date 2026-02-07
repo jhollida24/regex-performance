@@ -7,21 +7,14 @@ class AggregateRedactor: URLRedactor {
         self.redactors = redactors
     }
     
-    func isCapableOfRedacting(urlString: String) -> Bool {
+    func redact(urlString: String) -> RedactionResult {
+        // Optimization: try each redactor until one succeeds
         for redactor in redactors {
-            if redactor.isCapableOfRedacting(urlString: urlString) {
-                return true
+            let result = redactor.redact(urlString: urlString)
+            if case .redacted = result {
+                return result
             }
         }
-        return false
-    }
-    
-    func redact(urlString: String) -> String {
-        for redactor in redactors {
-            if redactor.isCapableOfRedacting(urlString: urlString) {
-                return redactor.redact(urlString: urlString)
-            }
-        }
-        return urlString
+        return .notApplicable
     }
 }

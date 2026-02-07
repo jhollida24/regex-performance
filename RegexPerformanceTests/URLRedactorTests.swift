@@ -5,8 +5,21 @@ final class URLRedactorTests: XCTestCase {
     func testClientRouteRedaction() {
         let redactor = ClientRouteURLRedactor()
         
-        XCTAssertTrue(redactor.isCapableOfRedacting(urlString: "/feature/123"))
-        XCTAssertEqual(redactor.redact(urlString: "/feature/123"), "/feature/:id")
+        // Test redaction with applicable URL
+        let result1 = redactor.redact(urlString: "/feature/123")
+        if case .redacted(let redacted) = result1 {
+            XCTAssertEqual(redacted, "/feature/:id")
+        } else {
+            XCTFail("Expected redacted result")
+        }
+        
+        // Test redaction with non-applicable URL
+        let result2 = redactor.redact(urlString: "/unknown/path")
+        if case .notApplicable = result2 {
+            // Success
+        } else {
+            XCTFail("Expected notApplicable result")
+        }
     }
     
     func testAggregateRedactor() {
@@ -14,7 +27,20 @@ final class URLRedactorTests: XCTestCase {
             ClientRouteURLRedactor()
         ])
         
-        XCTAssertTrue(aggregate.isCapableOfRedacting(urlString: "/feature/456"))
-        XCTAssertEqual(aggregate.redact(urlString: "/feature/456"), "/feature/:id")
+        // Test redaction with applicable URL
+        let result = aggregate.redact(urlString: "/feature/456")
+        if case .redacted(let redacted) = result {
+            XCTAssertEqual(redacted, "/feature/:id")
+        } else {
+            XCTFail("Expected redacted result")
+        }
+        
+        // Test redaction with non-applicable URL
+        let result2 = aggregate.redact(urlString: "/unknown/path")
+        if case .notApplicable = result2 {
+            // Success
+        } else {
+            XCTFail("Expected notApplicable result")
+        }
     }
 }
