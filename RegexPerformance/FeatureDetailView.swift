@@ -28,8 +28,8 @@ struct FeatureDetailView: View {
                         title: "Feature \(i)"
                     )
                     presenter.update(feature: feature)
-                    presenter.logTap(feature: feature)
-                    _ = presenter.checkPermissions(feature: feature)
+                    presenter.logTap()
+                    _ = presenter.checkPermissions()
                 }
             }
             .buttonStyle(.borderedProminent)

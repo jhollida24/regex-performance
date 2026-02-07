@@ -13,31 +13,43 @@ class FeaturePresenter: ObservableObject {
         let title: String
     }
     
+    struct Action {
+        let feature: Feature
+        let route: Route?
+        
+        var requiresPermissions: Bool {
+            route?.path.contains("feature") ?? false
+        }
+    }
+    
     struct FeatureModel {
         let feature: Feature
         let route: Route?
     }
+    
+    private var currentAction: Action?
     
     init() {
         // Simulate feature updates
     }
     
     func update(feature: Feature) {
-        // Performance problem: parsing on every update
+        // Optimization: parse once and store in Action
         let route = parser.parse(feature.url)
+        let action = Action(feature: feature, route: route)
+        currentAction = action
         model = FeatureModel(feature: feature, route: route)
     }
     
-    func logTap(feature: Feature) {
-        // Performance problem: parsing again for logging
-        let route = parser.parse(feature.url)
-        print("Analytics: Tapped feature with route \(route?.path ?? "unknown")")
+    func logTap() {
+        // Optimization: reuse the parsed route from currentAction
+        guard let action = currentAction else { return }
+        print("Analytics: Tapped feature with route \(action.route?.path ?? "unknown")")
     }
     
-    func checkPermissions(feature: Feature) -> Bool {
-        // Performance problem: parsing again for permissions
-        let route = parser.parse(feature.url)
-        // Check if route requires special permissions
-        return route?.path.contains("feature") ?? false
+    func checkPermissions() -> Bool {
+        // Optimization: reuse the parsed route from currentAction
+        guard let action = currentAction else { return false }
+        return action.requiresPermissions
     }
 }
