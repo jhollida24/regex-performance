@@ -66,7 +66,7 @@ Same test scenario, different instrument.
 > - Main thread blocked: ___ ms
 > - Memory churned: ___ MB
 
-**Reference:** See the initial state in [commit 1d5e047](https://github.com/yourusername/regex-performance/commit/1d5e047213a2fb64da462367cd0aba5a3cc87055)
+**Reference:** See the initial state in [commit 1d5e047](https://github.com/jhollida24/regex-performance/commit/1d5e047213a2fb64da462367cd0aba5a3cc87055)
 
 ---
 
@@ -307,7 +307,7 @@ Go ahead and execute the plan.
  }
 ```
 
-**Reference:** See the full changes in [commit 33e4c08](https://github.com/yourusername/regex-performance/commit/33e4c08e3a9563f4884d165cf0369f8d7eb49291)
+**Reference:** See the full changes in [commit 33e4c08](https://github.com/jhollida24/regex-performance/commit/33e4c08e3a9563f4884d165cf0369f8d7eb49291)
 
 ### Measuring the Improvement
 
@@ -450,7 +450,7 @@ Go ahead and execute the plan.
      }
 ```
 
-**Reference:** See the full changes in [commit 1b3ece8](https://github.com/yourusername/regex-performance/commit/1b3ece8b1c54a31de25cf43e2bb5acc614d3c3eb)
+**Reference:** See the full changes in [commit 1b3ece8](https://github.com/jhollida24/regex-performance/commit/1b3ece8b1c54a31de25cf43e2bb5acc614d3c3eb)
 
 ### Measuring the Improvement
 
@@ -584,7 +584,7 @@ Go ahead and execute the plan.
  }
 ```
 
-**Reference:** See the full changes in [commit 8011af7](https://github.com/yourusername/regex-performance/commit/8011af73e5811e5901d6beededd91ea370cce45c)
+**Reference:** See the full changes in [commit 8011af7](https://github.com/jhollida24/regex-performance/commit/8011af73e5811e5901d6beededd91ea370cce45c)
 
 ### Measuring the Improvement
 
@@ -661,7 +661,7 @@ instruments -t "Allocations" -D allocations_after.trace \
 > - Memory churn: ___ MB → ___ MB (___% reduction)
 > - Memory cost: +___ MB persistent
 
-**Reference:** See the final state in [commit 8011af7](https://github.com/yourusername/regex-performance/commit/8011af73e5811e5901d6beededd91ea370cce45c)
+**Reference:** See the final state in [commit 8011af7](https://github.com/jhollida24/regex-performance/commit/8011af73e5811e5901d6beededd91ea370cce45c)
 
 ---
 
@@ -708,7 +708,7 @@ These were three straightforward changes that:
 ### Try It Yourself
 
 ```bash
-git clone https://github.com/yourusername/regex-performance
+git clone https://github.com/jhollida24/regex-performance
 cd regex-performance
 open RegexPerformance.xcodeproj
 ```
