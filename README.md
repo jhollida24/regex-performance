@@ -30,11 +30,11 @@ Test scenario:
 See [LESSON.md](LESSON.md) for the complete guide (will be added in final commit).
 
 Each commit demonstrates a specific optimization:
-- Commit 1: Initial state with performance issues
-- Commit 2: Reuse parsed routes in FeaturePresenter
-- Commit 3: Pre-compile regex patterns in RouteMatcher
-- Commit 4: Eliminate duplicate parsing in URLRedactor
-- Commit 5: Complete lesson
+- [Commit 1d5e047](../../commit/1d5e047): Initial state with performance issues
+- [Commit 33e4c08](../../commit/33e4c08): Reuse parsed routes in FeaturePresenter
+- [Commit 1b3ece8](../../commit/1b3ece8): Pre-compile regex patterns in RouteMatcher
+- [Commit 8011af7](../../commit/8011af7): Eliminate duplicate parsing in URLRedactor
+- [Commit 7ea0365](../../commit/7ea0365): Complete lesson
 
 ## Your Results
 
