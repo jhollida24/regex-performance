@@ -37,41 +37,65 @@ You can follow along by cloning this repository and profiling the app yourself.
 Before changing anything, I needed reproducible measurements.
 
 **Creating a Test Scenario:**
+
 ```
 1. Launch the app
-2. Tap "Feature Detail" button 5 times
-3. Return to home
+2. Tap "Feature Detail" button
+3. Tap "Simulate Updates" button (simulates 5 feature updates)
+4. Observe the repeated parsing in the console
 ```
-
-Why this scenario?
-- Represents real user behavior
-- Repeatable
-- Exercises the reported slow interaction
 
 **Using Instruments Time Profiler:**
 
+From Xcode:
+1. Open `RegexPerformance.xcodeproj`
+2. Product → Profile (Cmd+I)
+3. Select "Time Profiler"
+4. Click Record
+5. Perform the test scenario
+6. Stop recording
+
+Or from command line:
 ```bash
-# From the repository root
-instruments -t "Time Profiler" -D trace_before.trace \
-  -w <device-id> com.example.RegexPerformance
+# Build the app
+xcodebuild -project RegexPerformance.xcodeproj \
+  -scheme RegexPerformance \
+  -sdk iphonesimulator \
+  -configuration Release \
+  build
+
+# Boot a simulator
+xcrun simctl boot "iPhone 15" || true
+
+# Install the app
+xcrun simctl install booted \
+  ./build/Build/Products/Release-iphonesimulator/RegexPerformance.app
+
+# Profile with Instruments (you'll need to interact with the app manually)
+instruments -t "Time Profiler" -w "iPhone 15" com.example.RegexPerformance
 ```
 
 **Placeholder for profiling data:**
 > **[Profile the app and record your baseline numbers here]**
-> - Total parse time: ___ ms
+> - Total time: ___ ms
 > - Time in regex initialization: ___ ms
-> - Main thread blocked: ___ ms
+> - Time in route parsing: ___ ms
 
-Reference: See the initial state in [commit 7bfae2b](https://github.com/jhollida24/regex-performance/commit/7bfae2b)
+Reference: See the initial state in [commit 7bfae2b](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/7bfae2b)
 
-**Also Captured Memory Data:**
+**Also Capture Memory Data:**
 
+From Xcode:
+1. Product → Profile (Cmd+I)
+2. Select "Allocations"
+3. Click Record
+4. Perform the test scenario
+5. Stop recording
+
+Or from command line:
 ```bash
-instruments -t "Allocations" -D allocations_before.trace \
-  -w <device-id> com.example.RegexPerformance
+instruments -t "Allocations" -w "iPhone 15" com.example.RegexPerformance
 ```
-
-Same test scenario, different instrument.
 
 ---
 
@@ -282,7 +306,7 @@ Go ahead and execute the plan.
  }
 ```
 
-See the full changes in [commit 14c525d](https://github.com/jhollida24/regex-performance/commit/14c525d)
+See the full changes in [commit 14c525d](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/14c525d)
 
 **Placeholder for profiling:**
 > **[Profile again and record the improvement]**
@@ -370,7 +394,7 @@ And in RouteParser:
  }
 ```
 
-See the full changes in [commit a967280](https://github.com/jhollida24/regex-performance/commit/a967280)
+See the full changes in [commit a967280](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/a967280)
 
 **Placeholder for profiling:**
 > **[Profile again and record the improvement]**
@@ -442,7 +466,7 @@ Show me your plan for refactoring this.
  }
 ```
 
-See the full changes in [commit ce5e158](https://github.com/jhollida24/regex-performance/commit/ce5e158)
+See the full changes in [commit ce5e158](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/ce5e158)
 
 **Placeholder for profiling:**
 > **[Profile again and record the final improvement]**
@@ -495,20 +519,30 @@ You: [Reviews diff, commits or provides feedback]
 
 **Running the Same Test:**
 
+From Xcode:
+1. Product → Profile (Cmd+I)
+2. Select "Time Profiler"
+3. Click Record
+4. Tap "Feature Detail" → "Simulate Updates"
+5. Stop recording
+6. Compare with your baseline trace
+
+Or from command line:
 ```bash
-instruments -t "Time Profiler" -D trace_after.trace \
-  -w <device-id> com.example.RegexPerformance
+# Profile with Instruments (you'll need to interact with the app)
+instruments -t "Time Profiler" -w "iPhone 15" com.example.RegexPerformance
 ```
 
-Same test scenario: tap "Feature Detail" 5 times
+Same test scenario: Tap "Feature Detail" → "Simulate Updates" (5 feature updates, each parsed 3 times).
 
 **Summary of improvements:**
 > **[Your profiling results]**
-> - Parse time: ___ ms → ___ ms (___% reduction)
+> - Total time: ___ ms → ___ ms (___% reduction)
+> - Time in regex init: ___ ms → ___ ms (___% reduction)
 > - Memory churn: ___ MB → ___ MB (___% reduction)
 > - Memory cost: +___ MB persistent
 
-Reference final state in [commit ce5e158](https://github.com/jhollida24/regex-performance/commit/ce5e158)
+Reference final state in [commit ce5e158](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/ce5e158)
 
 ---
 
@@ -548,11 +582,11 @@ Three focused optimizations based on profile analysis:
 ```bash
 git clone https://github.com/jhollida24/regex-performance
 cd regex-performance
-swift build
-swift run RegexPerformanceApp
+git checkout spm-version
+open RegexPerformance.xcodeproj
 ```
 
-Build and profile the app yourself. Walk through each commit to see the optimizations.
+Build and profile the app yourself (Cmd+I). Walk through each commit to see the optimizations.
 
 Next time you get a performance bug:
 1. Profile it with Instruments (save the trace!)
