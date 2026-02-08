@@ -1,52 +1,118 @@
 # Regex Performance Optimization Demo
 
-This repository demonstrates a systematic approach to identifying and fixing regex compilation performance issues.
+This repository demonstrates a systematic approach to identifying and fixing regex compilation performance issues in an iOS app.
 
-## Building and Running
+## Building
 
-This is a Swift Package Manager (SPM) project. You can build and run it from the command line:
+You can build this project using either Xcode or the command line:
+
+### Using Xcode
 
 ```bash
-# Build the project
-swift build
-
-# Run the demo app
-swift run RegexPerformanceApp
-
-# Run tests
-swift test
+open RegexPerformance.xcodeproj
 ```
 
-## Profiling
+Then press Cmd+R to build and run on a simulator.
 
-To profile the performance issues, you can use Instruments:
+### Using Command Line
+
+Build for iOS Simulator:
+
+```bash
+xcodebuild -project RegexPerformance.xcodeproj \
+  -scheme RegexPerformance \
+  -sdk iphonesimulator \
+  -configuration Release \
+  build
+```
+
+## Running
+
+### From Xcode
+
+1. Open `RegexPerformance.xcodeproj`
+2. Select a simulator (e.g., iPhone 15)
+3. Press Cmd+R to run
+4. Tap "Feature Detail" button to trigger the performance issue
+
+### From Command Line
+
+First, find an available simulator:
+
+```bash
+xcrun simctl list devices available | grep iPhone
+```
+
+Then boot it (replace with your simulator name):
+
+```bash
+xcrun simctl boot "iPhone 15" || true
+```
+
+Build and install:
+
+```bash
+# Build the app
+xcodebuild -project RegexPerformance.xcodeproj \
+  -scheme RegexPerformance \
+  -sdk iphonesimulator \
+  -configuration Release \
+  -derivedDataPath ./build
+
+# Install to booted simulator
+xcrun simctl install booted ./build/Build/Products/Release-iphonesimulator/RegexPerformance.app
+
+# Launch the app
+xcrun simctl launch booted com.example.RegexPerformance
+```
+
+## Profiling with Instruments
+
+### From Xcode
+
+1. Open the project in Xcode
+2. Product → Profile (Cmd+I)
+3. Select "Time Profiler"
+4. Click Record
+5. Tap "Feature Detail" button 5-10 times
+6. Stop recording
+7. Analyze the results
+
+### From Command Line
 
 ```bash
 # Build in release mode
-swift build -c release
+xcodebuild -project RegexPerformance.xcodeproj \
+  -scheme RegexPerformance \
+  -sdk iphonesimulator \
+  -configuration Release \
+  build
 
-# The executable will be in .build/release/RegexPerformanceApp
-# You can profile it with Instruments Time Profiler
+# Get the app bundle path
+APP_PATH=$(find ./build -name "RegexPerformance.app" | head -1)
 
-# Or run it with the time command to see basic timing
-time .build/release/RegexPerformanceApp
+# Boot a simulator if needed
+xcrun simctl boot "iPhone 15" || true
+
+# Install the app
+xcrun simctl install booted "$APP_PATH"
+
+# Profile with Instruments
+instruments -t "Time Profiler" \
+  -w "iPhone 15" \
+  com.example.RegexPerformance
 ```
 
-For iOS profiling, you would typically:
-1. Build the app for iOS
-2. Deploy to simulator or device
-3. Attach Instruments Time Profiler
-4. Execute the test scenario
-5. Analyze the results
+**Note:** You'll need to manually interact with the app (tap "Feature Detail" button) while Instruments is recording.
 
 ## Test Scenario
 
-The demo simulates:
-1. Creating 10 features
-2. For each feature:
-   - Update the presenter (parses route)
-   - Log a tap event (parses route again)
-   - Check permissions (parses route again)
+To reproduce the performance issue:
+
+1. Launch the app
+2. Tap "Feature Detail" button
+3. Tap "Simulate Updates" button
+4. Observe the console output showing repeated parsing
 
 This demonstrates the performance issues that will be optimized.
 
@@ -55,23 +121,26 @@ This demonstrates the performance issues that will be optimized.
 See [LESSON.md](LESSON.md) for the complete guide.
 
 Each commit demonstrates a specific optimization:
-- [Commit 1](https://github.com/jhollida24/regex-performance/commit/HASH1): Initial state with performance issues
-- [Commit 2](https://github.com/jhollida24/regex-performance/commit/HASH2): Reuse parsed routes
-- [Commit 3](https://github.com/jhollida24/regex-performance/commit/HASH3): Pre-compile regex patterns
-- [Commit 4](https://github.com/jhollida24/regex-performance/commit/HASH4): Eliminate duplicate parsing
-- [Commit 5](https://github.com/jhollida24/regex-performance/commit/HASH5): Complete lesson
+- [Commit 7bfae2b](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/7bfae2b): Initial state with performance issues
+- [Commit 14c525d](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/14c525d): Reuse parsed routes
+- [Commit a967280](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/a967280): Pre-compile regex patterns
+- [Commit ce5e158](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/ce5e158): Eliminate duplicate parsing
+- [Commit 564163a](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/564163a): Complete lesson
 
 ## Your Results
 
 Profile the app and record your results:
 
 **Before optimizations:**
-- Total time: ___ ms
-- Average per feature: ___ ms
+- Parse time: ___ ms
+- Time in regex initialization: ___ ms
+- Main thread blocked: ___ ms
 
 **After optimizations:**
-- Total time: ___ ms (___% reduction)
-- Average per feature: ___ ms (___% reduction)
+- Parse time: ___ ms (___% reduction)
+- Time in regex initialization: ___ ms (___% reduction)
+- Main thread blocked: ___ ms (___% reduction)
+- Memory cost: +___ MB persistent
 
 ## Performance Issues Demonstrated
 

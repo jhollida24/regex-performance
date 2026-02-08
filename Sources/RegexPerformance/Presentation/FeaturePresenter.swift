@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 /// Presents feature information to the UI
 ///
@@ -6,7 +7,7 @@ import Foundation
 /// - Once in update()
 /// - Again in logTap()
 /// - Again in checkPermissions()
-public class FeaturePresenter {
+public class FeaturePresenter: ObservableObject {
     private let parser: RouteParser
     private var currentFeature: Feature?
     
