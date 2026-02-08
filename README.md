@@ -122,10 +122,10 @@ See [LESSON.md](LESSON.md) for the complete guide.
 
 Each commit demonstrates a specific optimization:
 - [Commit 7bfae2b](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/7bfae2b): Initial state with performance issues
-- [Commit 14c525d](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/14c525d): Reuse parsed routes
-- [Commit a967280](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/a967280): Pre-compile regex patterns
-- [Commit ce5e158](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/ce5e158): Eliminate duplicate parsing
-- [Commit 564163a](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/564163a): Complete lesson
+- [Commit 7223b8f](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/7223b8f): Reuse parsed routes
+- [Commit 9e49443](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/9e49443): Pre-compile regex patterns
+- [Commit 2df2626](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/2df2626): Eliminate duplicate parsing
+- [Commit fcd2250](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/fcd2250): Complete lesson
 
 ## Your Results
 

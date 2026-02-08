@@ -306,7 +306,7 @@ Go ahead and execute the plan.
  }
 ```
 
-See the full changes in [commit 14c525d](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/14c525d)
+See the full changes in [commit 7223b8f](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/7223b8f)
 
 **Placeholder for profiling:**
 > **[Profile again and record the improvement]**
@@ -394,7 +394,7 @@ And in RouteParser:
  }
 ```
 
-See the full changes in [commit a967280](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/a967280)
+See the full changes in [commit 9e49443](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/9e49443)
 
 **Placeholder for profiling:**
 > **[Profile again and record the improvement]**
@@ -466,7 +466,7 @@ Show me your plan for refactoring this.
  }
 ```
 
-See the full changes in [commit ce5e158](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/ce5e158)
+See the full changes in [commit 2df2626](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/2df2626)
 
 **Placeholder for profiling:**
 > **[Profile again and record the final improvement]**
@@ -542,7 +542,7 @@ Same test scenario: Tap "Feature Detail" → "Simulate Updates" (5 feature updat
 > - Memory churn: ___ MB → ___ MB (___% reduction)
 > - Memory cost: +___ MB persistent
 
-Reference final state in [commit ce5e158](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/ce5e158)
+Reference final state in [commit 2df2626](https://github.com/jhollida24/regex-performance/tree/spm-version/commit/2df2626)
 
 ---
 
