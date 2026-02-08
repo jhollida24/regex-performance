@@ -2,34 +2,24 @@ import Foundation
 
 /// Matches URL patterns using regular expressions
 public struct RouteMatcher {
-    public let pattern: String
+    public let regex: NSRegularExpression
     public let parameterNames: [String]
     
-    public init(pattern: String, parameterNames: [String] = []) {
-        self.pattern = pattern
+    public init(regex: NSRegularExpression, parameterNames: [String] = []) {
+        self.regex = regex
         self.parameterNames = parameterNames
     }
     
     /// Check if the given path matches this pattern
     public func matches(_ path: String) -> Bool {
-        // PERFORMANCE ISSUE: This compiles the regex on every call
-        // Should pre-compile once and reuse
-        guard let regex = try? NSRegularExpression(pattern: pattern) else {
-            return false
-        }
-        
+        // OPTIMIZATION: Use pre-compiled regex instead of compiling on every call
         let range = NSRange(path.startIndex..., in: path)
         return regex.firstMatch(in: path, range: range) != nil
     }
     
     /// Extract parameters from the path if it matches
     public func extract(from path: String) -> [String: String]? {
-        // PERFORMANCE ISSUE: This compiles the regex again on every call
-        // Should pre-compile once and reuse
-        guard let regex = try? NSRegularExpression(pattern: pattern) else {
-            return nil
-        }
-        
+        // OPTIMIZATION: Use pre-compiled regex instead of compiling on every call
         let range = NSRange(path.startIndex..., in: path)
         guard let match = regex.firstMatch(in: path, range: range) else {
             return nil

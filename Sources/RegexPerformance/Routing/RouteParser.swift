@@ -8,6 +8,19 @@ public class RouteParser {
         self.matchers = matchers
     }
     
+    /// Convenience initializer that compiles patterns at initialization
+    public convenience init(patterns: [(pattern: String, parameterNames: [String])]) {
+        // OPTIMIZATION: Pre-compile all regex patterns once at initialization
+        let matchers = patterns.compactMap { pattern, parameterNames -> RouteMatcher? in
+            guard let regex = try? NSRegularExpression(pattern: pattern) else {
+                print("Warning: Failed to compile regex pattern: \(pattern)")
+                return nil
+            }
+            return RouteMatcher(regex: regex, parameterNames: parameterNames)
+        }
+        self.init(matchers: matchers)
+    }
+    
     /// Parse a URL string into a Route
     public func parse(_ urlString: String) -> Route? {
         guard let url = URL(string: urlString) else {

@@ -3,10 +3,10 @@ import XCTest
 
 final class URLRedactorTests: XCTestCase {
     func testClientRouteRedaction() {
-        let matchers = [
-            RouteMatcher(pattern: "^/feature/([^/]+)$", parameterNames: ["id"])
+        let patterns: [(pattern: String, parameterNames: [String])] = [
+            ("^/feature/([^/]+)$", ["id"])
         ]
-        let parser = RouteParser(matchers: matchers)
+        let parser = RouteParser(patterns: patterns)
         let redactor = ClientRouteURLRedactor(parser: parser)
         
         XCTAssertTrue(redactor.isCapableOfRedacting(urlString: "https://example.com/feature/123"))
@@ -16,10 +16,10 @@ final class URLRedactorTests: XCTestCase {
     }
     
     func testAggregateRedactor() {
-        let matchers = [
-            RouteMatcher(pattern: "^/feature/([^/]+)$", parameterNames: ["id"])
+        let patterns: [(pattern: String, parameterNames: [String])] = [
+            ("^/feature/([^/]+)$", ["id"])
         ]
-        let parser = RouteParser(matchers: matchers)
+        let parser = RouteParser(patterns: patterns)
         let clientRedactor = ClientRouteURLRedactor(parser: parser)
         let aggregate = AggregateRedactor(redactors: [clientRedactor])
         

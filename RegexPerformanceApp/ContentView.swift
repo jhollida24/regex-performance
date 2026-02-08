@@ -5,15 +5,15 @@ struct ContentView: View {
     @StateObject private var presenter: FeaturePresenter
     
     init() {
-        // Create route matchers for common patterns
-        let matchers = [
-            RouteMatcher(pattern: "^/home$", parameterNames: []),
-            RouteMatcher(pattern: "^/profile$", parameterNames: []),
-            RouteMatcher(pattern: "^/settings$", parameterNames: []),
-            RouteMatcher(pattern: "^/feature/([^/]+)$", parameterNames: ["id"]),
-            RouteMatcher(pattern: "^/help$", parameterNames: [])
+        // OPTIMIZATION: Pre-compile regex patterns at initialization
+        let patterns: [(pattern: String, parameterNames: [String])] = [
+            ("^/home$", []),
+            ("^/profile$", []),
+            ("^/settings$", []),
+            ("^/feature/([^/]+)$", ["id"]),
+            ("^/help$", [])
         ]
-        let parser = RouteParser(matchers: matchers)
+        let parser = RouteParser(patterns: patterns)
         _presenter = StateObject(wrappedValue: FeaturePresenter(parser: parser))
     }
     

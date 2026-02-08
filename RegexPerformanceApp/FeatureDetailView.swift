@@ -68,10 +68,10 @@ struct FeatureDetailView: View {
 }
 
 #Preview {
-    let matchers = [
-        RouteMatcher(pattern: "^/feature/([^/]+)$", parameterNames: ["id"])
+    let patterns: [(pattern: String, parameterNames: [String])] = [
+        ("^/feature/([^/]+)$", ["id"])
     ]
-    let parser = RouteParser(matchers: matchers)
+    let parser = RouteParser(patterns: patterns)
     let presenter = FeaturePresenter(parser: parser)
     
     return FeatureDetailView(presenter: presenter)
