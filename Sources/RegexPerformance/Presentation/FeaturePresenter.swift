@@ -13,8 +13,15 @@ public class FeaturePresenter: ObservableObject {
         }
     }
     
+    /// Action bundles a feature with its parsed route
+    public struct Action {
+        public let feature: Feature
+        public let route: Route?
+    }
+    
     private let parser: RouteParser
     @Published public var currentFeature: Feature?
+    @Published public var currentAction: Action?
     
     public init(parser: RouteParser) {
         self.parser = parser
@@ -22,30 +29,29 @@ public class FeaturePresenter: ObservableObject {
     
     /// Update the current feature
     public func update(feature: Feature) {
-        // PERFORMANCE ISSUE: Parses the route here (first time)
+        // OPTIMIZATION: Parse once and store in Action
         let route = parser.parse(feature.url)
+        currentAction = Action(feature: feature, route: route)
         print("Feature updated: \(feature.id), route: \(route?.path ?? "none")")
         currentFeature = feature
     }
     
     /// Log a tap event for analytics
     public func logTap() {
-        guard let feature = currentFeature else { return }
+        guard let action = currentAction else { return }
         
-        // PERFORMANCE ISSUE: Parses the same route again (second time)
-        let route = parser.parse(feature.url)
-        print("Analytics: tap on \(feature.id), route: \(route?.path ?? "none")")
+        // OPTIMIZATION: Reuse the parsed route from currentAction
+        print("Analytics: tap on \(action.feature.id), route: \(action.route?.path ?? "none")")
     }
     
     /// Check permissions for the current feature
     public func checkPermissions() -> Bool {
-        guard let feature = currentFeature else { return false }
+        guard let action = currentAction else { return false }
         
-        // PERFORMANCE ISSUE: Parses the same route again (third time)
-        let route = parser.parse(feature.url)
-        print("Checking permissions for \(feature.id), route: \(route?.path ?? "none")")
+        // OPTIMIZATION: Reuse the parsed route from currentAction
+        print("Checking permissions for \(action.feature.id), route: \(action.route?.path ?? "none")")
         
         // Simple permission check based on route
-        return route != nil
+        return action.route != nil
     }
 }
