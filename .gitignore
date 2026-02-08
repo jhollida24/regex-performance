@@ -1,0 +1,15 @@
+# Build artifacts
+.build/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+DerivedData/
+
+# Swift Package Manager
+.swiftpm/
+
+# Xcode user-specific files
+*.xcuserstate
+xcuserdata/
+
+# Lesson planning
+.lesson-planner-prompt.md
