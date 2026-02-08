@@ -1,12 +1,17 @@
 import Foundation
 
+/// Result of a URL redaction attempt
+public enum RedactionResult {
+    case redacted(String)
+    case notApplicable
+}
+
 /// Protocol for URL redactors
 public protocol URLRedactor {
-    /// Check if this redactor can handle the given URL
-    func isCapableOfRedacting(urlString: String) -> Bool
-    
-    /// Redact sensitive information from the URL
-    func redact(urlString: String) -> String
+    /// Attempt to redact a URL string
+    /// Returns .redacted with the redacted string if successful
+    /// Returns .notApplicable if this redactor doesn't handle this URL
+    func redact(urlString: String) -> RedactionResult
 }
 
 /// Redacts URLs that match known client routes
@@ -17,15 +22,10 @@ public class ClientRouteURLRedactor: URLRedactor {
         self.parser = parser
     }
     
-    public func isCapableOfRedacting(urlString: String) -> Bool {
-        // PERFORMANCE ISSUE: Parses the URL to check capability (first time)
-        return parser.parse(urlString) != nil
-    }
-    
-    public func redact(urlString: String) -> String {
-        // PERFORMANCE ISSUE: Parses the same URL again (second time)
+    public func redact(urlString: String) -> RedactionResult {
+        // OPTIMIZATION: Parse once and return result based on match
         guard let route = parser.parse(urlString) else {
-            return urlString
+            return .notApplicable
         }
         
         // Redact parameter values
@@ -34,6 +34,6 @@ public class ClientRouteURLRedactor: URLRedactor {
             redacted += "/\(key):<redacted>"
         }
         
-        return redacted
+        return .redacted(redacted)
     }
 }

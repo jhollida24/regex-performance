@@ -9,10 +9,29 @@ final class URLRedactorTests: XCTestCase {
         let parser = RouteParser(patterns: patterns)
         let redactor = ClientRouteURLRedactor(parser: parser)
         
-        XCTAssertTrue(redactor.isCapableOfRedacting(urlString: "https://example.com/feature/123"))
+        let result = redactor.redact(urlString: "https://example.com/feature/123")
         
-        let redacted = redactor.redact(urlString: "https://example.com/feature/123")
-        XCTAssertTrue(redacted.contains("redacted"))
+        if case .redacted(let redactedString) = result {
+            XCTAssertTrue(redactedString.contains("redacted"))
+        } else {
+            XCTFail("Expected .redacted result")
+        }
+    }
+    
+    func testClientRouteNotApplicable() {
+        let patterns: [(pattern: String, parameterNames: [String])] = [
+            ("^/feature/([^/]+)$", ["id"])
+        ]
+        let parser = RouteParser(patterns: patterns)
+        let redactor = ClientRouteURLRedactor(parser: parser)
+        
+        let result = redactor.redact(urlString: "https://example.com/other/path")
+        
+        if case .notApplicable = result {
+            // Success
+        } else {
+            XCTFail("Expected .notApplicable result")
+        }
     }
     
     func testAggregateRedactor() {
@@ -23,9 +42,12 @@ final class URLRedactorTests: XCTestCase {
         let clientRedactor = ClientRouteURLRedactor(parser: parser)
         let aggregate = AggregateRedactor(redactors: [clientRedactor])
         
-        XCTAssertTrue(aggregate.isCapableOfRedacting(urlString: "https://example.com/feature/123"))
+        let result = aggregate.redact(urlString: "https://example.com/feature/123")
         
-        let redacted = aggregate.redact(urlString: "https://example.com/feature/123")
-        XCTAssertTrue(redacted.contains("redacted"))
+        if case .redacted(let redactedString) = result {
+            XCTAssertTrue(redactedString.contains("redacted"))
+        } else {
+            XCTFail("Expected .redacted result")
+        }
     }
 }

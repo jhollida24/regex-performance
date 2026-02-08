@@ -8,16 +8,15 @@ public class AggregateRedactor: URLRedactor {
         self.redactors = redactors
     }
     
-    public func isCapableOfRedacting(urlString: String) -> Bool {
-        return redactors.contains { $0.isCapableOfRedacting(urlString: urlString) }
-    }
-    
-    public func redact(urlString: String) -> String {
+    public func redact(urlString: String) -> RedactionResult {
+        // OPTIMIZATION: Try each redactor until one succeeds
+        // No separate capability check - just try to redact
         for redactor in redactors {
-            if redactor.isCapableOfRedacting(urlString: urlString) {
-                return redactor.redact(urlString: urlString)
+            let result = redactor.redact(urlString: urlString)
+            if case .redacted = result {
+                return result
             }
         }
-        return urlString
+        return .notApplicable
     }
 }
